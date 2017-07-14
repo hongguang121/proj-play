@@ -1,0 +1,38 @@
+(define (int n)
+  (if (= 1 (remainder n 2))
+      (- n 1)
+      n))
+
+(define (swap lst i j)
+  (define (swap-iter a b result)
+    (if (null? lst)
+        result
+        (swap-iter ())))
+  
+  (define (find lst id)
+    (if (= id 0)
+      (car lst)
+      (find (cdr lst) (- id 1))))
+    ))
+
+
+(define (find-compare lst i j r)
+  (define (fciter lst i j r result)
+    (if (or (= i r) (= j r))
+        result
+        (cond ((and (> (find lst i) (find lst r)) (< (find lst j) (find lst r)))
+               (i++ j++))
+              ((< (find lst i) (find lst r)) i++)
+              ((> (find lst j) (find lst r)) j++)
+              (else (fciter lst (+ i 1) (- j 1))))))
+  (fciter lst 0 (- (length lst) 1) (/ (int (length lst)) 2) '()))
+  
+
+(define (compare x y)
+  (cond ((> x y) (cons y x))
+        ((< x y) (cons x y))
+        (else (cons x y))))
+
+(define (qsort lst)
+  (define (qsort-iter lst l m r)
+    ()))

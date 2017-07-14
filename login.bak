@@ -1,0 +1,21 @@
+#lang racket
+
+(require web-server/servlet
+         web-server/servlet-env
+         web-server/formlets
+         web-server/formlets/syntax)
+
+(require "words.rkt")
+
+(provide/contract (start (request? . -> . response?)))
+
+
+(serve/servlet start
+               #:launch-browser? #f
+               #:quit? #f
+               #:listen-ip #f
+               #:port 8100
+               #:extra-files-paths (list "e:\\source\\MyWordsWeb")
+               #:servlet-path "/login"
+               #:command-line? #f
+               #:stateless? #f)

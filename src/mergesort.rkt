@@ -1,0 +1,56 @@
+(define (sorting left right)
+  (cond ((null? left) right)
+        ((null? right) left)
+        (else 
+         (let ((l (car left)) (r (car right)))
+           (cond ((< l r) (cons l 
+                                (sorting (cdr left) right)))
+                 ((> l r) (cons r
+                                (sorting left (cdr right))))
+                 ((= l r) (cons l
+                                (sorting (cdr left) right))))
+           ))))
+
+(define (split arr start end)
+  (define (split-iter arr add count)
+    (cond ((> start end) '())
+          ((> count (- end start)) '())
+          ((< add start) (split-iter (cdr arr) (+ add 1) count))
+          (else (cons (car arr)
+                      (split-iter (cdr arr) add (+ count 1))))
+        ))
+  (split-iter arr 1 0))
+
+(define (len item)
+  (define (length-iter item count)
+    (if (null? item)
+        count
+        (length-iter (cdr item) (+ count 1))))
+  (length-iter item 0))
+
+(define (int n)
+  (if (= 1 (remainder n 2))
+      (- n 1)
+      n))
+
+(define (merge left right)
+  (cond ((null? left) right)
+        ((null? right) left)
+        (else 
+         (let ((l (car left)) (r (car right)))
+           (cond ((< l r) (cons l 
+                                (merge (cdr left) right)))
+                 ((> l r) (cons r
+                                (merge left (cdr right))))
+                 ((= l r) (cons l
+                                (merge (cdr left) right))))))))
+
+(define (msort arr)
+  (define (msort-iter left mid right)
+    (if (or (and (= (- mid left) 0) (= (- right mid) 1))
+            (and (= (- mid left) 0) (= (- right mid) 0))
+            (and (= (- mid left) -1)))
+        (sorting (split arr left mid) (split arr (+ mid 1) right))
+        (sorting (msort-iter left (/ (int (+ left mid)) 2) mid)
+                 (msort-iter (+ mid 1) (/ (int (+ mid right)) 2) right))))
+  (msort-iter 1 (/ (int (len arr)) 2) (len arr)))

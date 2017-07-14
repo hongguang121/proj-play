@@ -1,0 +1,38 @@
+#lang racket
+
+(require racket/tcp)
+(require net/url)
+(require net/http-client)
+(require net/uri-codec)
+
+;path = "e:/text/"
+(define (files path)
+  (map (λ (p) (string-append path (path->string p))) (directory-list path)))
+
+;(load-file (files path))
+(define (load-file files-path)
+  (apply + (map (λ (fp) (length (filter-not (λ (l) (string=? l "")) (file->lines fp)))) files-path))) ;过滤空行
+  ;(apply + (map (λ (fp) (length (file->lines fp))) files-path))) ;不过滤空行
+
+(define (insert-html list-page)
+  (cond ((null? list-page) '())
+        ((string-contains? (car list-page) "shizixq-p1")
+         (cons (string-append (substring (car list-page) 0 (- (string-length (car list-page)) 4)) 
+                              "\t\t<span><a href=\"../index.html\" style=\"color: #5251d9; padding-left:30px;\">更多老师</a></span></p>")
+               (cdr list-page)))
+        (else (cons (car list-page)
+                    (insert-html (cdr list-page))))))
+
+;(insert-html (file->lines "E:\\ypedp\\html\\ypzk\\szzj\\110.html"))
+;(display-lines-to-file (insert-html (file->lines "E:\\ypedp\\html\\ypzk\\szzj\\110.html")) "e:/test.html")
+
+;file-path = (files "e:/html/")
+(define (edit-file files-path)
+  (map (λ (fp) (display-lines-to-file (insert-html (file->lines fp)) (string-append "e:/html/edit/" (substring fp 8)))) files-path))
+
+
+(define (add-class file-name)
+  (map (λ (line) (if (and (string-contains? line "col-sm-")
+                          ())
+       (file->lines file-name))
+

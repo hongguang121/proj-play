@@ -1,0 +1,181 @@
+ <!DOCTYPE html>
+<html lang="cn">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+
+    <script src="js/jquery-3.1.1.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/buttons.js"></script>
+    <script src="js/jquery.imagecompress.js"></script>
+    <!--<script src="js/poem.js"></script>-->
+    <script src="js/poem-article.js"></script>
+
+    <link rel="stylesheet" href="css/bootstrap.css" />
+    <link rel="stylesheet" href="css/poem.css" />
+    <link rel="stylesheet" href="css/buttons.css"/>
+
+    <title>诗与远方</title>
+</head>
+
+<body>
+
+<div class="banner"></div>
+<nav class="navbar navbar-default navset" role="navigation" >
+    <div class="container-fluid">
+        <div class="row">
+            <div class="navbar-header col-md-2">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">诗与远方</a>
+            </div>
+
+            <div class="collapse navbar-collapse col-md-offset-7 col-md-1 navbar-set" id="nav-font">
+                <ul class="nav navbar-nav navbar-right">
+                    <li></li>
+                </ul>
+            </div>
+
+<!--            <div class="head-icon"></div>
+
+            <div class="collapse navbar-collapse col-md-offset-5 col-md-3 message">
+                <div class="part-1"><a href="#">标识展示</a></div>
+                <div class="part-2">
+                    <span><a href="#">消息通知</a></span>
+                    <a href="#"><span class="glyphicon glyphicon glyphicon-log-out part-3" aria-hidden="true" style="padding-left:30px;"></span></a>
+                </div>
+            </div>-->
+        </div>
+    </div>
+</nav>
+
+<div class="user">
+    <div class="head">
+        <ol class="breadcrumb">
+            <li><a href="#" id="home">Home</a></li>
+            <li><a href="#" id="lib">Library</a></li>
+            <li class="active" id="data">Data</li>
+        </ol>
+    </div>
+
+            <div class="left-panel">
+                <div class="input-group search">
+                    <input type="text" class="form-control" placeholder="Search for..." />
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button">Search</button>
+            </span>
+                </div>
+
+                <br/><br/><br/>
+
+                <span id="edit-text"> 文章目录 </span>
+
+                <div id="article">
+                    <div id="art-list"></div>
+                </div>
+
+                <div class="bt-art-lr">
+                    <button id="art-left" class="button button-border button-pill button-small"><span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span></button>
+                    <button id="art-right" class="button button-border button-pill button-small"><span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span></button>
+                </div>
+
+            </div>
+
+            <div class="middle-panel">
+
+                <!--<div class="hide-show-left"><img src="img/left.svg" width="40" style="position: relative; top: 15px; left: -7px;"/></div>
+                <div class="hide-show-right"><img src="img/right.svg" width="40" style="position: relative; top: 15px; left: -7px;"/></div>-->
+
+        <div class="title">
+                <div><input name="title" type="text" id="title"  size="30" class="init-title" maxlength="100"
+                            placeholder="请输入标题" wrap="hard" cols="100"
+                            onmouseover=this.focus();this.select();
+                            style="border:none;color:'#363636';" /></div>
+
+                <div><input name="auth" type="text" id="auth" size="25" class="init-auth" maxlength="25"
+                            placeholder="请输入作者" wrap="hard" cols="25"
+                            onmouseover=this.focus();this.select();
+                            onclick="if(value==defaultValue){value='';this.style.color='#363636'}"
+                            onBlur="if(!value){value=defaultValue;this.style.color='#999'}" style="border:none;" /></div>
+                <div id="count-auth"><p>0/25</p></div>
+        </div>
+
+        <div class="contents">
+            <textarea name="summary" type="text" class="init-text" id="summary" size="30" maxlength="600"
+                      placeholder="请输入文章摘要/限500字内/可以不填" wrap="hard" cols="30"
+                      onmouseover="if(value==defaultValue){value='';this.style.color='#363636'}"
+                      onclick="if(value==defaultValue){value='';this.style.color='#363636'}"></textarea>
+
+            <textarea name="content" type="text" class="init-text" id="text_0" size="30" maxlength="5000"
+                      placeholder="请输入正文" wrap="hard" cols="30"
+                      onmouseover="if(value==defaultValue){value='';this.style.color='#363636'}"
+                      onclick="if(value==defaultValue){value='';this.style.color='#363636'}"></textarea>
+
+            <div id="count-cont"><p id="cnt">0/5000</p></div>
+
+            <div class="show_upload"></div>
+            <div id="preview" style="display: none;"></div>
+
+            <div class="image-upload">
+                <form id="formdata">
+                    <input name="files" type="file" multiple="multiple" class="image" id="file"/>
+                </form>
+            </div>
+
+            <div class="five"><p>一次限上传5张</p></div>
+
+            <script type="text/javascript">
+
+            </script>
+
+            <div class="link"></div>
+
+            <div class="add-bt">
+                <button type="button" class="button button-pill button-border button-small" id="add_art">添加文章段落</button>
+                <button type="button" class="button button-pill button-border button-small" id="add_img">添加新的图片</button>
+            </div>
+
+            <div class="hobby-div">
+                <h4>文章分类</h4>
+            </div>
+
+            <div class="submit-bt">
+                <input type="submit" id="final" value="提交" class="button button-pill button-primary button-border button-small" />
+            </div>
+        </div>
+    </div>
+
+    <div class="right-panel">
+        <span id="add-media"> 文本编辑 </span>
+        <div class="list-group right-list">
+            <a href="#" class="list-group-item lg t"><span class="glyphicon glyphicon-pencil pic" aria-hidden="true"></span><span class="text">预览</span></a>
+            <a href="#" class="list-group-item lg p"><span class="glyphicon glyphicon-picture pic" aria-hidden="true"></span><span class="text">编辑</span></a>
+        </div>
+        <span id="add-text"> 商品列表 </span><br/>
+        <div class="panel-heading goods-list">
+        </div>
+        <div class="bt-goods-lr">
+            <button class="button button-border button-pill button-small bgl"><span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span></button>
+            <button class="button button-border button-pill button-small bgr"><span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span></button>
+        </div>
+    </div>
+
+</div>
+
+<!--<div class="to-top">
+    <button class="button button-large button-circle">
+        <img src="img/置顶.svg" width="25" />
+    </button>
+</div>-->
+
+<div class="footer">
+    <div id="result"></div>
+</div>
+
+</body>
+</html>

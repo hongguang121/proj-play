@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta content="yes" name="apple-mobile-web-app-capable" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+    <link rel="stylesheet" type="text/css" href="../css/changan-report-detail.css"/>
+    <link rel="stylesheet" type="text/css" href="http://cache.amap.com/lbs/static/main1119.css"/>
+    <script type="text/javascript" src="../js/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="../js/placeholder.js"></script>
+    <script type="text/javascript" src="../js/jquery.tap.js"></script>
+    <script type="text/javascript" src="../js/jquery.imagecompress.js"></script>
+    <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=f1d526b6c847bced6de19c69c1adc56a&plugin=AMap.ToolBar&callback=init"></script>
+    <script type="text/javascript" src="../js/changan-report-detail.js"></script>
+    <title>西安举报</title>
+    <script>
+        function getQueryParam(name){
+            var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if(r!=null)
+                return  unescape(r[2]);
+            return null;
+        }
+
+        var loginKey = localStorage.getItem('loginKey');
+        var videoLink = ""; //上传视频地址
+
+    </script>
+</head>
+<body>
+
+    <div id='container' style="display: none;"></div>
+    <div id="tip" style="display: none"></div>
+
+    <header>
+        <ul>
+            <li class="hui"><em><img src="../img/icon_goback.png"></em></li>
+            <li class="titleTotal">儿童拐卖</li>
+            <li id="kefu">电话举报</li>
+        </ul>
+
+        <div class="moddle hide">
+            <div class="call clearfix">
+                <p class="call_phone">110</p>
+                <span style="border-right: 1px solid #EBE9E7;" class="cancel">取消</span>
+                <a href="tel:110"><span class="sure">确定</span></a>
+            </div>
+        </div>
+    </header>
+
+    <section>
+        <!--标题-->
+        <div class="title">
+            <input type="text" placeholder="举报标题(必填)" id="title" />
+        </div>
+
+        <!--文本描述-->
+        <div class="centent">
+             <textarea name="" rows="6" cols="25" maxlength="140" placeholder="描述现场或者情况，疑似人相貌体征等(不超过140字)" id="content"></textarea>
+        </div>
+
+        <div class="upload">
+            <div id="preview" style="display: none;"></div>
+            <div class="show" id="show"></div>
+        </div>
+        <!--上传图片-->
+        <div class="approve">
+            <div class="opprove-box">
+                <div class="approve-style" style="border-bottom: 0 solid #eee;" id="personage">
+                    <div class="image-upload-0">
+                        <form id="formdata-0" enctype="multipart/form-data">
+                            <span>相机</span>
+                            <input type="file" accept="image/*" capture="camera" multiple="multiple" name="files" width="100%" height="200%" id="file-0" onclick="window.moumou.callBack(JSON.stringify({'callVideo': 'callImg', 'loginKey': loginKey}));" />
+                        </form>
+                    </div>
+                </div>
+                <div class="opprove-box approve-style" style="border-bottom: 0 solid #eee;">
+                    <div class="image-upload-0">
+                        <form id="formdata-3" enctype="multipart/form-data">
+                            <span>相册</span>
+                            <input type="file" accept="image/*" capture="camera" multiple="multiple" name="files" width="100%" height="200%" id="file-3" onclick="window.moumou.callBack(JSON.stringify({'callVideo': 'callLocalImg', 'loginKey': loginKey}));" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="call_off">取消</div>
+        </div>
+
+        <div class="mask"></div>
+
+        <div class="upload-video">
+            <div class="show-video" id="show-video"></div>
+        </div>
+
+        <div class="approve-1">
+            <div class="opprove-box-1">
+                <div class="approve-style-1" style="border-bottom: 0 solid #eee;" id="personage-1">
+                    <div class="video">
+                        <form id="formdata-1" enctype="multipart/form-data">
+                            <span>上传录制视频</span>
+                            <!--<input type="file" accept="video/*" capture="camcorder" name="videos" width="100%" height="200%" id="file-1" onclick="window.moumou.callBack(JSON.stringify({'callVideo': 'callVideo', 'loginKey': loginKey}));" onchange="notifyVideoPath()"/>-->
+                            <input type="file" accept="video/*" capture="camcorder" name="videos" width="100%" height="200%" id="file-1" onclick="window.moumou.callBack(JSON.stringify({'callVideo': 'callVideo', 'loginKey': loginKey}));" />
+                            <!--<input type="file" accept="video/*" capture="camcorder" name="videos" width="100%" height="200%" id="file-1" onclick="window.moumou.callBack('callVideo');" />-->
+                        </form>
+                    </div>
+                </div>
+                <div class="opprove-box-1 approve-style-1">
+                    <div class="video-2">
+                        <form id="formdata-2">
+                            <span>上传本地视频</span>
+                            <input type="file" accept="video/*" name="videos" width="100%" height="200%" id="file-2" onclick="window.moumou.callBack(JSON.stringify({'callVideo': 'callLocalVideo', 'loginKey': loginKey}));" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="call_off">取消</div>
+        </div>
+
+        <!--举报状态-->
+        <div class="report clearfix">
+            <span>匿名举报</span>
+            <label><input class="mui-switch mui-switch-anim" type="checkbox" checked></label>
+        </div>
+
+        <span class="button">确定</span>
+
+    </section>
+     <div class="moddles hides">
+		<div class="ca clearf">
+			 <p class="cal">您的帐号已在别处登录,请重新登录!</p>
+			 <span style="" class="cance">确定</span>
+		</div>
+    </div>
+
+    <div class="progress"></div>
+    <div class="active-pro"></div>
+    <div class="text"></div>
+
+    <script>
+        var tusitemp="";
+        function mess_tusi(strs){
+            //清除事件
+            clearTimeout(tusitemp);
+            $("#mess_tusi").remove();
+            //创建吐丝层并写入内容
+            if(!$("#mess_tusi").attr("id")){ //吐丝层不存在创建
+                $("body").append("<div id='mess_tusi' style='z-index: 100002;position:fixed;font-size:16px;border-radius:4px !important;background:rgba(0,0,0,.7);color:#fff;display:none;'><span style='display:block;padding:5px 15px;'>"+strs+"</span></div>"); //写入内容
+            }else{
+                $("#mess_tusi").html(strs);  //写入内容
+            }
+
+            //定义吐丝层位置
+            var left=($(window).width()-$("#mess_tusi").width())/2;//居中
+            //var top=($(window).height()-$("#mess_tusi").height())/2;//居中
+            var top=$(window).height()*0.45;//偏下
+            $("#mess_tusi").css({"left":left+"px","top":top+"px"});
+
+            //显示吐丝层
+            $("#mess_tusi").css("display",'');
+
+            //2秒后关闭
+            tusitemp =  setTimeout(function (){
+                $("#mess_tusi").remove();
+                $("#mess_tusi").html("");
+            },1000);
+            return false;
+        }
+
+        var prog = function(n){
+            $(".progress").show();
+            $(".active-pro").show();
+            $(".text").show();
+            $(".active-pro").css("width", n * 3 + "px");
+            $(".text").text(n + "%");
+        };
+
+        var videoSuccess = function(vl){
+            videoLink = vl;
+            $(".mask").hide();
+            $(".approve-1").stop().animate({
+                "bottom":"-2rem"
+            },200);
+            mess_tusi("视频上传成功");
+            $(".show-video").hide();
+            $(".upload-video").append("<video id='vd' src=" + videoLink + " controls='controls'><div class='close' id='close_video'></div></video>");
+            $("#vd").css({
+                "position": "relative",
+                "width": "0.77rem",
+                "height": "0.77rem",
+                "margin-left": "0.3rem",
+                "border": "dashed 1px #e6e6e6",
+                "border-radius": "0.1rem",
+                "float": "left"
+            });
+            loaded = true;
+        };
+
+        function notifyProgress(data){
+//            alert(JSON.parse(data).progress);
+            prog(JSON.parse(data).progress);//无法调用js文件中的函数
+        }
+
+        function notifyUploadState(message){
+            $(".progress").hide();
+            $(".active-pro").hide();
+            $(".text").hide();
+            videoSuccess(message);
+        }
+
+        function imgClick(){
+            alert("clicked!");
+        }
+    </script>
+
+</body>
+</html>

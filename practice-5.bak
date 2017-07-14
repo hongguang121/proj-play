@@ -1,0 +1,10 @@
+#lang racket
+
+;cond-expr: symbol
+
+(define i 0)
+(define (loop-till cond-expr body)
+  (unless (eval cond-expr)    
+    (eval body)
+    (loop-till cond-expr body)))
+

@@ -1,0 +1,40 @@
+(define (d-sys l)
+  (define find 
+    (lambda (s n)
+      (if (= n 0)
+          (car s)
+          (find (cdr s) (- n 1)))))
+  (define member*
+    (lambda (a s)
+      (cond ((null? s) #f)
+            ((atom? (car s))
+             (or (eq? (car s) a)
+                 (member* a (cdr s))))
+            (else (or (member* a (car s))
+                      (member* a (cdr s)))))))
+  (define insertR 
+    (lambda (new old lat)
+      (cond ((null? lat) '())
+            (else (cond ((eq? old (car lat)) 
+                         (cons old
+                               (cons new 
+                                     (insertR new old (cdr lat)))))
+                        (else 
+                         (cons (car lat)
+                               (insertR new old (cdr lat)))))))))
+  (define rember
+    (lambda (a lat)
+      (cond ((null? lat) '())
+            (else (cond ((eq? a (car lat)) (cdr lat))
+                        (else (cons (car lat)
+                                    (rember a (cdr lat)))))))))
+  (define (dispatch m)
+    (cond ((eq? m 'find) find)
+          ((eq? m 'member*) member*)
+          ((eq? m 'insertR) insertR)
+          ((eq? m 'rember) rember)
+          (else (error "Unknown request" m))))
+  dispatch)
+
+;(define acc (d-sys s))
+

@@ -1,0 +1,18 @@
+#lang racket
+
+(define (parse str)
+  (define (iter ls rs)
+    (cond ((null? ls) '())
+          ((eq? #\< (car ls))
+           (iter (cdr ls) rs))
+          ((eq? #\> (car ls))
+           (list->string (reverse rs)))
+          (else (iter (cdr ls)
+                      (cons (car ls) rs)))))
+  (iter (string->list str) '()))
+
+(define (rs ls)
+  (define (iter s r)
+    (cond ((null? s) r)
+          (else (iter (cdr s) (cons (car s) r)))))
+  (iter ls '()))

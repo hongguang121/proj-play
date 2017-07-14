@@ -1,0 +1,59 @@
+#lang profj/full
+ 
+class Example {
+  static String result = null;
+  public static void Main(String[] args) {
+    result = "Hi";
+  }
+}
+
+abstract class Inventory
+{
+    abstract int Value();
+}
+
+class Empty extends Inventory 
+{ 
+    Empty() {}
+    int Value() 
+    {
+      return 0; 
+    }
+}
+
+class Addition extends Inventory 
+{
+    int val;
+    Inventory rest;
+    Addition(int v, Inventory r) 
+    { 
+      val = v; 
+      rest = r; 
+    }
+
+    int Value() 
+    { 
+      return val + rest.Value(); 
+    }
+}
+
+//Inventory i = new Addition(5, new Addition(4, new Addition(3, new Empty())));
+//i.Value()
+
+abstract class Shape 
+{
+    abstract int area();
+}
+
+class Box extends Shape
+{
+    int size;
+    Box (int s)
+    {
+      size = s;
+    }
+    int area()
+    {
+      return size * size;
+    }
+}

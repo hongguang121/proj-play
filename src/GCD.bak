@@ -1,0 +1,6 @@
+(define (GCD x y)
+  (GCD-iter x y))
+(define (GCD-iter a b)
+  (if (= 0 (remainder a b))
+      b
+      (GCD-iter b (remainder a b))))

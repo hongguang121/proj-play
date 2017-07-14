@@ -1,0 +1,147 @@
+;;将string转换为list
+(require racket/file)
+(require math/array)
+
+(define wordlist (file->string "K:\\wordlist.txt")) ;wordlist是字符串
+(define han (file->string "K:\\han.txt"))
+(define hw (file->string "K:\\word.txt"))
+(define jp (file->string "K:\\jp.txt"))
+(define jw (file->string "K:\\jpword.txt"))
+;(define hs (split hw #\space))
+
+;(map (lambda(x) (regexp-match #rx"__" x)) (list ...))
+
+
+;(exist? a (split * *))
+;(exist? a (word-sp *))
+(define (exist? a lst)
+  (cond ((null? lst) #f)
+        ((string=? a (car lst)) #t)
+        (else (exist? a (cdr lst)))))
+
+(define (exist* a lat)
+  (cond ((null? lat) '())
+        ((not (pair? (car lat)))
+         (cond ((eq? a (car lat)) #t)
+               (else (exist* a (cdr lat)))))
+        (else (cons (exist* a (car lat))
+                    (exist* a (cdr lat))))))
+
+(define (exist-all a lat)
+    (cond ((= (string-length a) 1)
+           (single a lat))
+          (else (complex a (single (car (word-sp a)) lat)))))
+
+(define (across? a lst)
+  (define (iter l)
+    (cond ((null? l) #f)
+          ((exist? a l) #t)
+          ((exist? a (word-sp (car l))) #t)
+          (else (iter (cdr l)))))
+  (iter (split lst #\space)))
+
+(define (across-all a ls)
+  (cond ((null? ls) '())
+        ((across? a (car ls)) #t)
+        (else (across-all a (cdr ls)))))
+
+(define (single a lst)
+  (define (iter l)
+    (cond ((null? l) '())
+          ((string=? a (car (word-sp (car l))))
+           (cons (car l)
+                 (iter (cdr l))))
+          (else (iter (cdr l)))))
+  (iter (split lst #\space)))
+
+(define (complex a lst)
+  (define (iter l al)
+    (cond ((null? l) '())
+          ((and (not (< (string-length (car l)) al))
+                (string=? a (substring (car l) 0 al)))
+           (cons (car l)
+                 (iter (cdr l) al)))
+          (else (iter (cdr l) al))))
+  (iter lst (string-length a)))
+
+;用标记sp来分割lst,返回字符串列表
+;(split "This is it" #\s)
+(define (split lst sp)
+  (define (iter l s w)
+    (if (null? l)
+        (append w (list (list->string s)))
+        (if (eq? (car l) sp)
+            (iter (cdr l) '() (append w (list (list->string s))))
+            (iter (cdr l) (append s (list (car l))) w))))
+  (iter (string->list lst) '() '()))
+
+;将字符串表s切片,返回单个字符列表
+(define (word-sp s)
+  (define (iter w id)
+    (cond ((= id (string-length s)) (reverse w))
+          (else (iter (cons (list->string (list (string-ref s id))) w)
+                      (+ id 1)))))
+  (iter '() 0))
+
+;分词器
+;ls:(word-sp word)
+;lt:(split wordlist #\space)
+;example:(word-cp (word-sp "鞭炮声响彻夜空") (split wordlist #\space))
+(define (word-cp ls lt)
+  (define (iter s w v)
+    (cond ((exist? w lt)
+           (iter s "" (string-append v (string-append w "/"))))
+          ((null? s) (cons v w))
+          (else (iter (cdr s) (string-append w (car s)) v))))
+  (iter ls "" ""))
+
+(define (word-cpp ls lt)
+  (define (iter s t w v u r)
+    (cond ((null? t) (cons v (cons u w)))
+          ((and (exist? w lt) (= r 0))
+           (iter s (cdr t) (string-append w (car s))
+                 (string-append v (string-append w "/")) u 1))
+          ((= r 1)
+           (cond ((and (exist? w lt)(not (across? (word-sp w) (word-sp u))))
+                  (iter s (cdr t) (string-append w (car t))
+                        v (string-append u (string-append w "/")) 1))
+                 (else (iter s s "" v u 0))))
+          ((null? s) (cons v (cons u w)))
+          (else (iter (cdr s) (cdr t) (string-append w (car s)) v u r))))
+  (iter ls ls "" "" "" 0))
+
+;ls是语句字符串;lt是词汇表wordlist
+(define (gen-list ls lt)
+  (define (iter s t u v c)
+    (cond ((null? ls) '())
+          ((= (length (exist-all (car s) lt)) 1) 
+           (iter (cdr s) t
+                 (string-append (string-append u (car s)) "/") v))
+          ((> (length (exist-all (car s) lt)) 1)
+           ))
+          (else (iter (cdr s) t (string-append u (car s)) v)))
+  (iter (word-sp ls) (split lt #\space) "" ""))
+
+(define (find arr n)
+  (cond ((or (< n 0) (not(< n (length arr)))) '())
+        ((= n 0) (car arr))
+        (else (find (cdr arr) (- n 1)))))
+
+;(define rx #rx"__")
+(define (check rx lst)
+  (map (lambda(x) (regexp-match rx x)) lst))
+
+(define (del lst)
+  (if (null? lst)
+      '()
+      (if (eq? (car lst) #f)
+          (del (cdr lst))
+          (cons (car lst) (del (cdr lst))))))
+
+(define (add-word l r)
+    (cond ((null? l) r)
+          ((not (exist? (car l) r))
+           (add-word (cdr l) (append r (list (car l)))))
+          (else (add-word (cdr l) r))))
+
+

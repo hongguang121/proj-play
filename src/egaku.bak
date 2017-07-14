@@ -1,0 +1,13 @@
+#lang slideshow
+
+(define (four shape i)    
+      (let ((line (hc-append i shape shape)))
+        (vc-append i line line)))
+
+(define (square n . color)
+  (if (null? color)
+      "black"
+      (colorize (filled-rectangle n n) (car color)))
+
+(define (series mk)
+    (hc-append 4 (mk 5) (mk 10) (mk 20)))

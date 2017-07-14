@@ -1,0 +1,57 @@
+#lang racket
+
+(require web-server/servlet
+         web-server/servlet-env
+         web-server/formlets
+         web-server/formlets/syntax)
+
+(provide/contract (start (request? . -> . response?)))
+
+(define (start request)
+  (render-intro-page "" request))
+
+(define new-word-formlet
+  (formlet
+   (#%# ,{input-string . => . spell})
+   (values spell)))
+
+(define new-article
+  (formlet
+   (#%# ,{input-string . => . article})
+   (values article)))
+
+(define (render-intro-page res request)
+  (define (response-generator embed/url)
+    (response/xexpr
+     `(html (head (meta ((charset "UTF-8")))
+                  (script ((src "js/jquery-3.1.1.js")))
+                  (script ((src "js/bootstrap.js")))
+                  (link ((href "css/style.css")
+                         (rel "stylesheet"))))
+            (body (h1 "编辑文本")
+                  (form ((action
+                          ,(embed/url parse-intro)
+                          (method "post")))
+                        "标题: "
+                        ,@(formlet-display new-title)
+                        "文章: "
+                        ,@(formlet-display new-article)
+                        (input ((type "submit") (value "提交"))))
+                  (div ((id "result"))
+                       res)))))
+    (define (parse-intro request)
+      (let ((title (formlet-process new-title request))
+            (article (formlet-process new-article request)))
+        (render-intro-page (string-append title ": " article) (redirect/get))))
+    (send/suspend/dispatch response-generator))
+
+
+(serve/servlet start
+               #:launch-browser? #f
+               #:quit? #f
+               #:listen-ip #f
+               #:port 8100               
+               #:extra-files-paths (list "e:\\source\\MyWordsWeb")
+               #:servlet-path "/intro"
+               #:command-line? #f
+               #:stateless? #f)

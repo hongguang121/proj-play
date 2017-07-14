@@ -1,0 +1,28 @@
+(define (swap a b)
+  (list b a))
+
+(define (len item)
+  (define (length-iter item count)
+    (if (null? item)
+        count
+        (length-iter (cdr item) (+ count 1))))
+  (length-iter item 0))
+
+(define (item arr index)
+  (if (= index 1)
+      (car arr)
+      (item (cdr arr) (- index 1))))
+
+(define (int n)
+  (if (= 1 (remainder n 2))
+      (+ n 1)
+      n))
+
+(define (div-sort arr)
+  (define (div-sort-iter first mid last)
+    (if (and (= (len arr) 2) (> (item arr first) (item arr mid)))
+        (swap (item arr first) (item arr last))
+        ((div-sort-iter first (/ (int (+ first mid)) 2) mid)
+         (div-sort-iter mid (/ (int (+ mid last)) 2) last))))
+  (define merge )
+  (div-sort-iter 1 (/ (int (len arr)) 2) (len arr)))

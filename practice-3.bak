@@ -1,0 +1,21 @@
+#lang racket
+
+(define res '())
+
+(define (iter n)
+  (thread
+   (λ ()
+     ;(let ((rem '()))
+     (for ((i n))
+       (displayln (format "thread: ~a" i))       
+       ))))
+
+(define (main-iter n)
+  (for ((i n))
+    (displayln (format "main-thread: ~a" i))))
+
+(for ((i 3))
+  (let ()
+    ;(iter 5)
+    (thread-wait (iter 5))
+    (main-iter 3)))

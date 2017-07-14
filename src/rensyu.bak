@@ -1,0 +1,14 @@
+#lang racket
+
+(define (qsort ls)
+  (if (null? ls)
+      '()
+      (let ((n (list-ref ls (round (/ (length ls) 2)))))
+        (append
+         (qsort (filter (λ (x) (< x n)) ls))
+         (filter (λ (x) (= x n)) ls)
+         (qsort (filter (λ (x) (> x n)) ls))))))
+
+(define (gen-num m n)
+  (for/list ((i n))
+    (random m)))

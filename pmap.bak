@@ -1,0 +1,31 @@
+#lang racket
+
+(define output-semaphore (make-semaphore 1))
+
+(define res '())
+
+(define pmap-channel (make-channel))
+
+(define (pmap thread-id)
+  (thread
+   (λ ()     
+     (let loop ()
+       (define e (channel-get pmap-channel))
+       (case e
+         ((done) res)
+         (else
+          (call-with-semaphore
+           output-semaphore
+           (λ ()
+             (set! res (cons (map add1 (list e)) res))))
+             (loop)))))))
+
+(define pmap-threads (map pmap '(1 2 3)))
+
+(define (compute lst)
+      (for ((e lst))
+        (channel-put pmap-channel e)))
+
+(compute (append (range 20) '(done done done)))
+
+(for-each thread-wait pmap-threads)

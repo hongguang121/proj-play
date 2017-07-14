@@ -1,0 +1,51 @@
+(define (last l)
+  (define (last-iter s n)
+    (if (= n 1)
+        (car s)
+        (last-iter (cdr s) (- n 1))))
+  (last-iter l (length l)))
+
+(define (no-last l)
+  (define (iter s n)
+    (if (= n 0)
+        '()
+        (cons (car s) 
+              (iter (cdr s) (- n 1)))))
+  (iter l (- (length l) 1)))
+
+(define rember
+  (lambda (a lat)
+    (cond ((null? lat) '())
+          (else (cond ((eq? a (car lat)) (cdr lat))
+                      (else (cons (car lat)
+                                  (rember a (cdr lat)))))))))
+
+(define atom? 
+  (lambda (e)
+    (if (and (not (pair? e)) (not (null? e)))
+        #t
+        #f)))
+
+(define (q-sort s)
+  (if (< (length s) 2)
+      s
+      (append
+       (q-sort
+        (filter (lambda (x)
+                  (< x (last s)))
+                s))
+       (filter (lambda (x)
+                 (= x (last s)))
+               s)
+       (q-sort
+        (filter (lambda (x)
+                  (> x (last s)))
+                s)))))
+
+(define (b-sort s)
+  (define (iter l result)
+    (if (null? l)
+        result
+        (iter (rember (apply max l) l)
+              (cons (apply max l) result))))
+  (iter s '()))

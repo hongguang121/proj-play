@@ -1,0 +1,5 @@
+#lang racket
+
+(define in (open-input-file "e:/py.rkt"))
+
+(read-line in)

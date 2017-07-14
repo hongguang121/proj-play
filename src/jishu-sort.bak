@@ -1,0 +1,18 @@
+#lang racket
+
+(define (mod n b)
+  (define (iter b m q r) ;m:余数 q:商 b:基数 r:结果
+    (cond ((= q 0) (reverse r))
+          (else (iter b
+                      (remainder q b)
+                      (quotient q b)
+                      (cons (remainder q b) r)))))
+  (iter b 0 n '()))
+
+(define (gen arr)
+  (cond ((null? arr) '())
+        (else (cons (cons (mod (car arr) 10) (list (car arr)))
+                    (gen (cdr arr))))))
+
+(define s '((2 x) (3 y) (1 z)))
+(map (lambda (x) (assoc x s)) (sort (map (lambda (x) (car x)) s) <))

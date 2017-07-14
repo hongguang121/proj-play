@@ -1,0 +1,374 @@
+#lang racket
+
+(require web-server/servlet
+         web-server/servlet-env
+         web-server/formlets
+         web-server/formlets/syntax)
+
+(provide/contract (start (request? . -> . response?)))
+
+(define (start request)
+  (render-edit-page "" request))
+
+(define new-word-formlet
+  (formlet
+   (#%# ,{input-string . => . spell})
+   (values spell)))
+
+(define date-formlet
+  (formlet
+   (div "Month:" ,{input-int . => . month}
+        "Day:" ,{input-int . => . day})
+   (list month day)))
+
+(define (render-edit-page result request)  
+    (response/xexpr
+     '(html
+       ((lang "cn"))
+       (head
+        ()        
+        (meta ((charset "utf-8")))
+        
+        (meta ((content "IE=edge") (http-equiv "X-UA-Compatible")))
+        
+        (meta
+         ((content
+           "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no")
+          (name "viewport")))
+        
+        (script ((src "js/jquery-3.1.1.js")))
+        
+        (script ((src "js/bootstrap.js")))
+        
+        (script ((src "js/buttons.js")))
+        
+        ;(script ((src "js/jquery.imagecompress.js")))
+        
+        (script ((src "js/poem.js")))
+        
+        (link ((href "css/bootstrap.css") (rel "stylesheet")))
+        
+        (link ((href "css/poem.css") (rel "stylesheet")))
+        
+        (link ((href "css/buttons.css") (rel "stylesheet")))
+        
+        (title () "诗与远方"))
+       (body
+        ((bgcolor ""))
+        (div ((class "banner")))
+        (nav
+         ((class "navbar navbar-default navset") (role "navigation"))
+         
+         (div
+          ((class "container-fluid"))
+          
+          (div
+           ((class "row"))
+           
+           (div
+            ((class "navbar-header col-md-2"))
+            
+            (button
+             ((class "navbar-toggle collapsed")
+              (data-target "#bs-example-navbar-collapse-1")
+              (data-toggle "collapse")
+              (type "button"))
+             
+             (span ((class "sr-only")) "Toggle navigation")
+             
+             (span ((class "icon-bar")))
+             
+             (span ((class "icon-bar")))
+             
+             (span ((class "icon-bar")))
+             )
+            
+            (a ((class "navbar-brand") (href "#")) "诗与远方"))
+           
+           (div
+            ((class "collapse navbar-collapse col-md-offset-7 col-md-1 navbar-set")
+             (id "nav-font"))
+            
+            (ul
+             ((class "nav navbar-nav navbar-right"))
+             
+             (li ())
+             )
+            )
+           
+           (div ((class "head-icon")))
+           
+           (div
+            ((class "collapse navbar-collapse col-md-offset-5 col-md-3 message"))
+            
+            (div ((class "part-1")) (a ((href "#")) "标识展示"))
+            
+            (div
+             ((class "part-2"))
+             
+             (span () (a ((href "#")) "消息通知"))
+             
+             (a
+              ((href "#"))
+              (span
+               ((aria-hidden "true")
+                (class "glyphicon glyphicon glyphicon-log-out part-3")
+                (style "padding-left:30px;"))))
+             )
+            )
+           )
+          ))
+        (div
+         ((class "user"))
+         
+         (div
+          ((class "head"))
+          
+          (ol
+           ((class "breadcrumb"))
+           
+           (li () (a ((href "#") (id "home")) "Home"))
+           
+           (li () (a ((href "#") (id "lib")) "Library"))
+           
+           (li ((class "active") (id "data")) "Data")
+           )
+          )
+         
+         (div
+          ((class "left-panel"))
+          
+          (div
+           ((class "input-group search"))
+           
+           (input ((class "form-control") (placeholder "Search for...") (type "text")))
+           
+           (span
+            ((class "input-group-btn"))
+            
+            (button ((class "btn btn-default") (type "button")) "Search")
+            )
+           )
+          
+          (br ())
+          (br ())
+          (br ())
+          
+          (span ((id "edit-text")) " 文章目录 ")
+          
+          (div
+           ((class "list-group article-list"))
+           
+           (div ((class "art-pic")) (img ((src "img/pic/background.jpg") (width "200"))))
+           
+           (div ((class "art-title")) "文章标题1")
+           )
+          
+          (div
+           ((class "list-group article-list"))
+           
+           (div ((class "art-pic")) (img ((src "img/pic/p2233951898.jpg") (width "200"))))
+           
+           (div ((class "art-title")) "文章标题2")
+           )
+          
+          (div
+           ((class "list-group article-list"))
+           
+           (div ((class "art-pic")) (img ((src "img/pic/p2392823566.jpg") (width "200"))))
+           
+           (div ((class "art-title")) "文章标题2")
+           )
+          
+          (div
+           ((class "bt-art-lr"))
+           
+           (button
+            ((class "button button-border button-pill button-small"))
+            (span ((aria-hidden "true") (class "glyphicon glyphicon-menu-left"))))
+           
+           (button
+            ((class "button button-border button-pill button-small"))
+            (span ((aria-hidden "true") (class "glyphicon glyphicon-menu-right"))))
+           )
+          )
+         
+         (div
+          ((class "middle-panel"))
+          
+          (div
+           ((class "title"))
+           
+           (div
+            ()
+            (input
+             ((class "init-title")
+              (cols "100")
+              (id "title")
+              (maxlength "100")
+              (name "title")
+              (placeholder "请输入标题")
+              (size "30")
+              (type "text")
+              (wrap "hard")
+              (onmouseover "this.focus();this.select()")
+              (style "border:none;color:'#363636';"))))
+           
+           (div
+            ()
+            (input
+             ((class "init-auth")
+              (cols "25")
+              (id "auth")
+              (maxlength "25")
+              (name "auth")
+              (placeholder "请输入作者")
+              (size "25")
+              (type "text")
+              (wrap "hard")
+              (onmouseover "this.focus();this.select()")
+              (onclick "if(value==defaultValue){value='';this.style.color='#363636'}")
+              (onBlur "if(!value){value=defaultValue;this.style.color='#999'}")
+              (style "border:none"))))
+           
+           (div ((id "count-auth")) (p () "0/25")))
+          
+          (div
+           ((class "contents"))
+           
+           (textarea
+            ((class "init-text")
+             (cols "30")
+             (id "summary")
+             (maxlength "600")
+             (name "summary")
+             (placeholder "请输入文章摘要/限500字内/可以不填")
+             (size "30")
+             (type "text")
+             (wrap "hard"))
+            )
+           
+           (textarea
+            ((class "init-text")
+             (cols "30")
+             (id "text_0")
+             (maxlength "5000")
+             (name "content")
+             (placeholder "请输入正文")
+             (size "30")
+             (type "text")
+             (wrap "hard"))
+            )
+           
+           (div ((id "count-cont")) (p ((id "cnt")) "0/5000"))
+           
+           (div ((class "show_upload")))
+
+           (div ((class "image-upload"))
+                (input ((name "upload") (type "file") (multiple "") (class "image"))))
+           
+           (div ((class "five")) (p () "一次限上传5张"))
+
+           #|
+           (script "$('.image').imageCompress({
+                        'quality': 50,
+                        'onloadStart': function(result){
+                            console.log('读取图片开始'+result);
+                        },
+                        'onloadEnd': function(result){
+                            console.log('读取图片结束'+result);
+                        },
+                        'oncompressStart': function(result){
+                            console.log('压缩图片开始'+result);
+                        },
+                        'oncompressEnd': function(result){
+                            console.log('压缩图片结束'+result);
+                            $('#preview').append(result);
+                            $('#preview').find('img').addClass('preview');
+                        },
+                        'callback': function(){
+                            console.log('处理完毕');
+                        }
+                    });")
+           |#
+           
+           (div ((class "link")))
+           
+           (div
+            ((class "add-bt"))
+            
+            (button
+             ((class "button button-pill button-border button-small")
+              (id "add_art")
+              (type "button"))
+             "添加文章段落")
+            
+            (button
+             ((class "button button-pill button-border button-small")
+              (id "add_img")
+              (type "button"))
+             "添加新的图片")
+            )
+           
+           (div
+            ((class "submit-bt"))
+            
+            (input
+             ((class "button button-pill button-primary button-border button-small")
+              (id "final")
+              (type "submit")
+              (value "提交")))
+            )
+           )
+          )
+         
+         (div
+          ((class "right-panel"))
+          
+          (span ((id "add-media")) " 文本编辑 ")
+          
+          (div
+           ((class "list-group right-list"))
+           
+           (a
+            ((class "list-group-item lg t") (href "#"))
+            (span ((aria-hidden "true") (class "glyphicon glyphicon-pencil pic")))
+            (span ((class "text")) "预览"))
+           
+           (a
+            ((class "list-group-item lg p") (href "#"))
+            (span ((aria-hidden "true") (class "glyphicon glyphicon-picture pic")))
+            (span ((class "text")) "编辑"))
+           )
+          
+          (span ((id "add-text")) " 商品列表 ")
+          (br ())
+          
+          (div ((class "panel-heading goods-list")) )
+          
+          (div
+           ((class "bt-goods-lr"))
+           
+           (button
+            ((class "button button-border button-pill button-small bgl"))
+            (span ((aria-hidden "true") (class "glyphicon glyphicon-menu-left"))))
+           
+           (button
+            ((class "button button-border button-pill button-small bgr"))
+            (span ((aria-hidden "true") (class "glyphicon glyphicon-menu-right"))))
+           )
+          ))
+        (div ((class "footer"))
+             (div ((id "res"))))))))
+
+(serve/servlet start
+               #:launch-browser? #f
+               #:quit? #f
+               #:listen-ip #f
+               #:port 8100
+               #:extra-files-paths (list "e:\\hg\\MyWordsWeb")
+               #:servlet-path "/poem"
+               #:command-line? #f
+               #:stateless? #f)
+
+  

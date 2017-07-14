@@ -1,0 +1,21 @@
+#lang racket
+
+(define display-tower-hanoi
+  (let ((show-move (λ (s d)
+                     (display s)
+                     (display " --> ")
+                     (display d))))
+    (λ (n)
+      (letrec
+          ((move
+            (λ (n source destination helper)
+              (if (= n 1)
+                  (begin
+                    (show-move source destination)
+                    (newline))
+                  (begin
+                    (move (- n 1) source helper destination)
+                    (show-move source destination)
+                    (display ", ")
+                    (move (- n 1) helper destination source))))))
+        (move n 'L 'R 'C)))))

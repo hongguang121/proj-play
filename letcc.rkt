@@ -1,0 +1,13 @@
+#lang racket
+
+(define retry 0)
+
+(define (fact n)
+  (call/cc
+   (lambda (return)
+     (if (= n 0)
+         (begin
+           (set! retry return)
+           (return 1))
+         (* n (fact (- n 1)))))))
+

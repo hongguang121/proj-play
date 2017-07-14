@@ -1,0 +1,7 @@
+#lang racket
+
+(define filepath-1 "I:/node-project/pinyin.txt")
+(define filepath-2 "I:\node-project/zimu.txt")
+
+(define py (file->string filepath-1))
+(define zm (file->string filepath-2))

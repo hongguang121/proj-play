@@ -1,0 +1,14 @@
+#lang racket
+
+(require racket/date)
+(require racket/struct)
+
+;当前系统时间格式化：日期 小时 分钟 秒
+(define (format-date)
+  (let ((cd (struct->list (current-date))))
+    (list (list-ref cd 5)
+          (list-ref cd 4)
+          (list-ref cd 3)
+          (list-ref cd 2)
+          (list-ref cd 1)
+          (list-ref cd 0))))

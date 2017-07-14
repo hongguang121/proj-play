@@ -1,0 +1,11 @@
+#lang plai
+
+(define-type NumTree
+  [mt]
+  [node (v number?)
+        (l NumTree?)
+        (r NumTree?)])
+
+(define-type MisspelledAnimal
+  [caml (humps number)]
+  [yacc (height number)])

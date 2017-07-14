@@ -1,0 +1,8 @@
+﻿{good: [{good_id: "1", good_name: "洗发水", good_url: "a", good_price: 65, good_pic: "img/pic/background.jpg", good_intro: "香调：东方花香调 前调：蜜橘 金橘 杏 中调：蜂蜜 栀子花 水仙花 后调：广藿香 檀香木 麝香 属性：女香 标签：蜂蜜 甜 柑橘 脂粉 果香 白色花 "},
+    {good_id: "2", good_name: "沐浴露", good_url: "b", good_price: 70, good_pic: "img/pic/index0.jpg", good_intro: "商品介绍"},
+    {good_id: "3", good_name: "护发素", good_url: "c", good_price: 55, good_pic: "img/pic/index1.jpg", good_intro: "商品介绍"},
+    {good_id: "4", good_name: "香调：东方花香调 前调：蜜橘 金橘 杏 中调：蜂蜜 栀子花 水仙花 ", good_url: "d", good_price: 1600, good_pic: "img/pic/index2.jpg", good_intro: "商品介绍"},
+    {good_id: "5", good_name: "电脑", good_url: "e", good_price: 3000, good_pic: "img/pic/index3.jpg", good_intro: "商品介绍"},
+    {good_id: "6", good_name: "笔记本", good_url: "e", good_price: 3000, good_pic: "img/pic/index4.jpg", good_intro: "商品介绍"},
+    {good_id: "7", good_name: "内存", good_url: "e", good_price: 3000, good_pic: "img/pic/p2416590049.jpg", good_intro: "商品介绍"},
+    {good_id: "8", good_name: "硬盘", good_url: "e", good_price: 3000, good_pic: "img/pic/p2240256385.jpg", good_intro: "商品介绍"}]};

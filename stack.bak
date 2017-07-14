@@ -1,0 +1,17 @@
+#lang racket
+
+(define stack '())
+(define size 0)
+
+(define (Stack oper . arg)
+  (define (operation oper)
+    (cond ((eq? oper 'push)
+           (push arg))
+          ((eq? oper 'pop)
+           (pop))))
+  (define (push arg)
+    (set! stack (cons arg stack)))
+  (define (pop)
+    (let ()
+      (set! stack (cdr stack))))
+  (operation oper))

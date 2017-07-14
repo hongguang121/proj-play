@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="css/poem.css" />
+    <script src="js/jquery-3.1.1.js"></script>
+    <title>多图上传</title>
+</head>
+<body>
+
+<!--<div class="report-file">
+    <span>上传文件</span>
+    <input tabindex="3" size="3" name="report" class="file-prew" type="file" onchange="document.getElementById('textName').value=this.value">
+</div>-->
+<!--<input type="text" id="textName" style="height:28px;border:1px solid #f1f1f1" />-->
+
+<div class="show_upload"></div>
+
+<div class="image-upload">
+    <form id="formdata">
+        <input name="files" type="file" multiple="multiple" class="image" id="files"/>
+    </form>
+</div>
+
+<div class="show-local-img"></div>
+
+<script>
+    function dataURItoBlob(base64Data) {
+        var byteString;
+        if (base64Data.split(',')[0].indexOf('base64') >= 0)
+            byteString = atob(base64Data.split(',')[1]);
+        else
+            byteString = unescape(base64Data.split(',')[1]);
+        var mimeString = base64Data.split(',')[0].split(':')[1].split(';')[0];
+        var ia = new Uint8Array(byteString.length);
+        for (var i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+        return new Blob([ia], {type:mimeString});
+    }
+
+    var upload = function(formdata){
+        $.ajax({
+            url: "http://localhost:8100/upload",
+            type: "POST",
+            data: formdata,
+            dataType: "json",
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(data){
+                console.log(data);
+            },
+            error: function(xhr){
+                console.log(xhr);
+            }
+        });
+    };
+
+    var saveImg = function (filename, base64) {
+        localStorage.setItem(filename, base64);
+    };
+
+    $(".image-upload").change(function () {
+        var fileList = document.getElementById("files").files;
+        var formData;
+        for (var i = 0; i < fileList.length; i++ ){
+            var dt = new Date().getTime();
+            var filename = "Img" + dt;
+            var name = fileList[i].name; //图片文件名
+//            console.log(name);
+            formData = new FormData($("#formdata")[i]);
+            upload(formData);
+            var reader = new FileReader();
+            reader.readAsDataURL(fileList[i]);
+            reader.onload=function(e) {
+                $(".show_upload").append("<img src=" + this.result + " width='150' id='pic' />");
+                var pic = document.getElementById('pic');
+//                saveImg(filename, this.result);
+            }
+        }
+    });
+
+    var showPic = function(arr){
+        for (var i = 0; i < arr.length; i++){
+            $(".show-local-img").append("<img src=" + localStorage.getItem(arr[i]) + " width='150' />");
+        }
+    };
+
+    var arr = ['1_standard.jpg', 'background.jpg', 'p2233980973.jpg', 'p2233960011.jpg'];
+//    showPic(arr); //从缓存中读取
+</script>
+
+</body>
+</html>

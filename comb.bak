@@ -1,0 +1,10 @@
+#lang racket
+
+(define (list->atom ls)
+  (let ((ls (for/list ((i ls))
+              (list i))))
+    (cons '() ls)))
+
+(define (combinations ls)
+  (let-values (((ls lt) (split-at ls 1)))
+    (let )))

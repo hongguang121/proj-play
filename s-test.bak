@@ -1,0 +1,22 @@
+#lang racket
+
+(define algo
+  (lambda (symb)
+    (lambda args
+      (let ([ls args])
+        (letrec
+            ((R (lambda (ls res)
+                  (cond ((null? ls) res)
+                        (else (R (cdr ls) (symb (car ls) res)))))))
+          (R ls 1))))))
+
+(define fact
+  (letrec
+      ((fact
+        (lambda (n)
+          (if (= n 0)
+              1
+              (* n (fact (- n 1)))))))
+    fact))
+
+;在Y组合子中fact必须是一个procedure，不可以是一个symbol

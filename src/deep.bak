@@ -1,0 +1,13 @@
+(define deep
+  (lambda (n)
+    (cond ((= n 1) '(pizza))
+          (else (cons (deep (- n 1))
+                      '())))))
+
+(define Ns '())
+
+(define deepR
+  (lambda (n)
+    (set! Ns (cons n Ns))
+    (deep n)))
+

@@ -1,0 +1,5 @@
+#lang racket
+(require 2htdp/image)
+
+(define flag (rectangle 100 61.8 "solid" "red"))
+(define big-star (star 15 "solid" "yellow"))

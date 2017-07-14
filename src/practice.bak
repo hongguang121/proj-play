@@ -1,0 +1,27 @@
+(define (len item)
+  (define (len-iter a count)
+    (if (null? a)
+        count
+        (len-iter (cdr a) (+ 1 count))))
+  (len-iter item 0)) 
+
+(define (lp arr)
+  (define (lp-iter arr n)
+    (if (= n 0)
+        (car arr)
+        (lp-iter (cdr arr) (- n 1))))
+  (lp-iter arr (- (len arr) 1)))
+
+(define (revs arr)
+  (define (revs-iter arr result)
+    (if (null? arr)
+        result
+        (revs-iter (cdr arr) 
+                   (cons (car arr) result))))
+  (revs-iter arr '()))
+
+(define (fib-tail n)
+  (letrec ((R (λ (a b cnt)
+                (cond ((= cnt n) a)
+                      (else (R (+ a b) a (+ cnt 1)))))))
+    (R 1 0 1)))

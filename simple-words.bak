@@ -1,0 +1,113 @@
+#lang racket
+
+(define wlist (future (λ () (stream-first (stream->list (stream (file->string "e:/source/words/wlist.txt")))))))
+(define slist (future (λ () (stream-first (stream->list (stream (file->string "e:/source/words/slist.txt")))))))
+(define idlist (future (λ () (file->string "e:/source/words/identical.txt"))))
+(define article (future (λ () (file->string "e:/source/words/test.txt"))))
+
+(define (pre-load)
+  (let ()
+    (set! wlist (touch wlist))
+    (set! slist (touch slist))
+    (set! idlist (touch idlist))
+    (set! article (touch article))))
+
+(pre-load)
+
+(define (words/to-string str-ref)
+  (list->string (list str-ref)))
+
+(define (format* ls sym)
+  (define (select)
+    (cond ((eq? 'wlist sym) (iter ls 0 2 '() '()))          
+          ((eq? 'vocab sym) (iter ls 0 4 '() '()))
+          ((eq? 'slist sym) (fstr ls 0 0 "" '() '()))
+          ((eq? 'idlist sym) (idstr ls 0 "" '() '()))))
+  (define (iter lt cnt len rem res)
+    (cond ((null? lt) (append res (list rem)))
+          ((= cnt len) (iter lt 0 len '() (append res (list rem))))
+          (else (iter (cdr lt) (+ cnt 1) len (append rem (list (car lt))) res))))
+  (define (fstr str cnt line check rem res)
+    (cond ((= line 2)
+           (fstr str cnt 0 "" '() (cons rem res)))
+          ((= (string-length str) cnt) (reverse res))
+          ((string=? (words/to-string (string-ref str cnt)) "\r")
+           (fstr str (+ cnt 1) line "" (append rem (list check)) res))
+          ((string=? (words/to-string (string-ref str cnt)) "\n")
+           (fstr str (+ cnt 1) (+ line 1) "" rem res))          
+          (else (fstr str (+ cnt 1) line (string-append check (words/to-string (string-ref str cnt))) rem res))))
+  (define (idstr str cnt check rem res)
+    (cond ((= (string-length str) cnt) (reverse res))
+          ((string=? (words/to-string (string-ref str cnt)) "\n")
+           (idstr str (+ cnt 1) "" '() (cons (reverse rem) res)))
+          ((or (string=? (words/to-string (string-ref str cnt)) "\r")
+               (string=? (words/to-string (string-ref str cnt)) "\t")
+               (string=? (words/to-string (string-ref str cnt)) " "))
+           (idstr str (+ cnt 1) "" (cons check rem) res))
+          (else (idstr str (+ cnt 1) (string-append check (words/to-string (string-ref str cnt))) rem res))))
+  (select))
+
+(define mywords (format* wlist 'slist))
+(define mysets (format* slist 'slist))
+(define id (format* idlist 'idlist))
+
+(define (reuse ls path exists)
+  (display-lines-to-file ls path #:mode 'text #:exists exists))
+
+(define (add word)
+  (if (and (not (assf (λ (x) (string=? (car word) x)) mywords))(= (length word) 2))
+      (begin
+        (reuse word "e:/source/words/wlist.txt" 'append)
+        (set! wlist (file->string "e:/source/words/wlist.txt"))
+        (set! mywords (format* wlist 'slist)))
+      (assf (λ (x) (string=? (car word) x)) mywords)))
+
+(define (adds sentence)
+  (if (not (assf (λ (x) (string=? (car sentence) x)) mysets))
+      (begin
+        (reuse sentence "e:/source/words/slist.txt" 'append)        
+        (set! slist (file->string "e:/source/words/slist.txt"))
+        (set! mysets (format* slist 'slist)))
+      (assf (λ (x) (string=? (car sentence) x)) mysets)))
+
+(define (change new)
+  (let ()
+    (del (car new))
+    (add new)))
+
+(define (del word)
+  (if (assf (λ (x) (string=? word x)) mywords)
+      (begin 
+        (set! mywords (remove* (list word) mywords (λ (x y) (string=? x (car y)))))
+        (delete-file "e:/source/words/wlist.txt")
+        (map (λ (x) (reuse x "e:/source/words/wlist.txt" 'append)) mywords)
+        (set! wlist (file->string "e:/source/words/wlist.txt"))
+        (set! mywords (format* wlist 'slist)))
+      "Not Find."))
+
+(define (find-en str)
+  (if (string=? str "")
+      "请输入要查询的单词"
+      (filter (λ (x) (or (string-contains? (car x) (string-downcase str))
+                         (string-contains? (string-downcase str) (car x)))) mywords)))
+
+(define (find-cn str)
+  (filter (λ (x) (string-contains? (cadr x) str)) mywords))
+
+(define (test name)
+  (if (null? name) "全部测试完毕"
+      (let* ((ref (random (length name)))
+             (word (car (list-ref name ref)))
+             (mean (cadr (list-ref name ref))))
+        (display word)
+        (display " ————> ")
+        (let ((rd (read)))
+          (cond ((eq? 'n rd)
+                 (begin
+                   (display mean)
+                   (set! name (remove word name))
+                   (newline)
+                   (test name)))
+                (else "测试结束"))))))
+
+

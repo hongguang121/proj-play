@@ -1,0 +1,20 @@
+#lang racket
+
+(define (permute ls)
+  (define (iter lt)
+    (cond ((null? lt) '())
+          (else (append (map (λ (x) (append x (remove* x ls))) (map (λ (x) (append (list (car lt)) (list x))) (remove (car lt) lt)))
+                        (map (λ (x) (append x (remove* x ls))) (map (λ (x) (append (list x) (list (car lt)))) (remove (car lt) lt)))
+                        (permute (cdr lt))))))
+  (iter ls))
+
+
+(define (permute* ls)
+  (define (iter lt rem)
+    (cond ((null? lt)
+           ;(map (λ (x) (append x (remove* x ls))) rem))
+           rem)
+          (else (iter (cdr lt) (append rem
+                                       (map (λ (x) (append (list (car lt)) (list x))) (remove (car lt) lt))
+                                       (map (λ (x) (append (list x) (list (car lt)))) (remove (car lt) lt)))))))
+  (iter ls '()))

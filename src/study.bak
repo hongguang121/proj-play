@@ -1,0 +1,76 @@
+(require math)
+
+(define atom?
+    (lambda (x)
+      (and (not (pair? x)) (not (null? x)))))
+
+(define lat?
+  (lambda (l)
+    (cond ((null? l) #t)
+          ((atom? (car l)) (lat? (cdr l)))
+          (else #f))))
+
+(define member?
+  (lambda (a lat)
+    (cond ((null? lat) #f)
+          (else (or (eq? (car lat) a)
+                    (member? a (cdr lat)))))))
+
+(define rember
+  (lambda (a lat)
+    (cond ((null? lat) (quote()))
+          (else (cond ((eq? (car lat) a) (cdr lat))
+                      (else (rember a (cdr lat))))))))
+
+(define rember-f
+  (lambda (a lat)
+    (cond ((null? lat) (quote()))
+    (else (cons (car lat) (rember-f a (cdr lat)))))))
+
+(define (square x) (* x x))
+(define (cube x) (* x x x))
+
+(define (power a b)
+  (if (< b 0) 
+      (/ 1 (power-iter 1 a b))
+      (power-iter 1 a b)))
+       
+(define (power-iter n a b)
+  (if (< (abs b) 1)
+      n
+      (power-iter (* n a) a (- (abs b) 1))))
+
+(define (sum-integers a b)
+  (if (> a b)
+      0
+      (+ a (sum (+ a 1) b))))
+
+(define (sum term a next b)
+  (if (> a b)
+      0
+      (+ (term a)
+         (sum term (next a) next b))))
+
+(define (inc n) (+ n 1))
+(define (sum-cubes a b)
+  (sum cube a inc b))
+
+(define (f x y)
+  (let ((a (+ 1 (* x y)))
+        (b (- 1 y)))
+    (+ (* x (square a))
+       (* y b)
+       (* a b))))
+
+(define (pi-sum a b)
+  (sum (lambda (x) (/ 1.0 (* x (+ x 2))))
+       a
+       (lambda (x) (+ x 4))
+       b))
+
+(define (f a b)
+    (if (> a b)
+        (newline)
+        ((display (/ (sin (power 10 (- 1 a))) a))
+         (newline)
+         (f (+ a 1) b))))

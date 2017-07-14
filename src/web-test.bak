@@ -1,0 +1,54 @@
+#lang racket
+
+(require web-server/servlet
+         web-server/servlet-env
+         web-server/formlets
+         web-server/formlets/syntax)
+
+(provide/contract (start (request? . -> . response?)))
+
+(define (start request)
+  (render-test-page "This is result zone" request))
+
+(define (render-test-page res request)
+  (define (response-generator embed/url)
+    (response/xexpr
+     '(html (head (meta ((charset "UTF-8")))
+                  (meta ((content "width=device-width, initial-scale=1")
+                         (name "viewport")))
+                  (script ((src "js/jquery-2.1.4.min.js")))
+                  (script ((src "js/bootstrap.js")))
+                  (script ((src "js/react.js")))
+                  (script ((src "js/react-dom.js")))
+                  (script ((src "js/babel.min.js")))
+                  (link ((href "css/bootstrap.css")
+                         (rel "stylesheet")))
+                  (link ((href "css/normalize.css")
+                         (rel "stylesheet")))
+                  (link ((href "css/style.css")
+                         (rel "stylesheet")))
+                  (title "Test Page"))
+            (body (h1 "Test Page")
+                  (div ((id "test1"))
+                       (form ((action
+                               ,(embed/url click-button)))
+                             (button ((type "button")
+                                      (class "btn btn-default find"))
+                                     (span ((class "glyphicon glyphicon-search"))))))
+                  (div ((id "result"))
+                       ,res)))))
+  
+  (define (click-button)
+    (render-test-page "This is ajax test" (redirect/get)))
+  
+  (send/suspend/dispatch response-generator))
+
+(serve/servlet start
+               #:launch-browser? #f
+               #:quit? #f
+               #:listen-ip #f
+               #:port 8100
+               #:extra-files-paths (list "e:\\source")
+               #:servlet-path "/test"
+               #:command-line? #f
+               #:stateless? #f)

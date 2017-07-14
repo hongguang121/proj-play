@@ -1,0 +1,42 @@
+(define l '(a b c d e f g))
+
+(define eternity
+    (lambda (l)
+      (if (null? l)
+          0
+          (+ 1 (eternity (cdr l))))))
+
+((lambda (length)
+    (lambda (l)
+      (if (null? l)
+          0
+          (+ 1 (length (cdr l)))))
+    l)
+ 'length)
+
+((lambda(l)
+    (cond ((null? l) 0)
+          (else (+ 1 (eternity (cdr l))))))
+   l)
+
+(((lambda (f)
+    (lambda (l)
+      (cond ((null? l) 0)
+            (else (+ 1 (f (cdr l)))))))
+   ((lambda (g)
+      (lambda (l)
+        (cond ((null? l) 0)
+              (else (+ 1 (g (cdr l)))))))
+    eternity)) l)
+
+(define fact
+    (lambda (n)
+      (if (= n 0)
+          1
+          (* n (fact (- n 1))))))
+
+(((lambda (fact)
+     (lambda (n)
+       (cond ((= n 0) 1)
+             (else (* n (fact (- n 1)))))))
+     fact) 6)

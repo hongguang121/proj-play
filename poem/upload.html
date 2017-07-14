@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="css/poem.css" />
+    <script src="js/jquery-3.1.1.js"></script>
+    <script src="js/jquery.imagecompress.js"></script>
+    <title>多图上传</title>
+</head>
+<body>
+
+<div class="show_upload">
+    <div id="preview" style="display: none;"></div>
+    <div id="result" style="display: none;"></div>
+</div>
+
+<div class="image-upload" enctype="multipart/form-data">
+    <form id="formdata">
+        <input name="files" type="file" accept="image/*" multiple="multiple" class="image" id="files"/>
+    </form>
+</div>
+
+<div class="upload-video">
+    <div class="show-video" id="show-video"></div>
+</div>
+
+<div class="video-upload" enctype="multipart/form-data">
+    <form id="formdata-v">
+        <input name="videos" type="file" accept="video/*" multiple="multiple" class="video" id="videos"/>
+    </form>
+</div>
+
+<div class="pg">
+    <div class="progress"></div>
+    <div class="active-pro"></div>
+    <div class="text"></div>
+</div>
+
+<div class="show-local-img"></div>
+
+<style>
+    .pg{
+        position: relative;
+        width: 300px;
+        height: 15px;
+        top: -4rem;
+        margin: 0 auto;
+    }
+
+    .progress{
+        position: absolute;
+        width: 300px;
+        height: 15px;
+        margin-top: 50px;
+        border-radius: 10px;
+        background: #e7e7eb;
+        box-shadow: 5px 5px 5px #cdcdcd;
+        z-index: 0;
+        display: none;
+    }
+
+    .active-pro{
+        position: absolute;
+        width: 0;
+        height: 15px;
+        margin-top: 50px;
+        border-radius: 10px;
+        background: #2ca9e1;
+        z-index: 5;
+        display: none;
+    }
+
+    .text{
+        position: absolute;
+        width: 300px;
+        height: 15px;
+        margin-top: 50px;
+        padding-top: 1px;
+        text-align: center;
+        font-size: 12px;
+        font-weight: 600;
+        color: #2e2930;
+        line-height: 15px;
+        z-index: 10;
+        display: none;
+    }
+</style>
+
+<script>
+
+    var tusitemp="";
+    function mess_tusi(strs){
+        //清除事件
+        clearTimeout(tusitemp);
+        $("#mess_tusi").remove();
+        //创建吐丝层并写入内容
+        if(!$("#mess_tusi").attr("id")){ //吐丝层不存在创建
+            $("body").append("<div id='mess_tusi' style='z-index: 100002;position:fixed;font-size:16px;border-radius:4px !important;background:rgba(0,0,0,.7);color:#fff;display:none;'><span style='display:block;padding:5px 15px;'>"+strs+"</span></div>"); //写入内容
+        }else{
+            $("#mess_tusi").html(strs);  //写入内容
+        }
+
+        //定义吐丝层位置
+        var left=($(window).width()-$("#mess_tusi").width())/2;//居中
+        //var top=($(window).height()-$("#mess_tusi").height())/2;//居中
+        var top=$(window).height()*0.45;//偏下
+        $("#mess_tusi").css({"left":left+"px","top":top+"px"});
+
+        //显示吐丝层
+        $("#mess_tusi").css("display",'');
+
+        //2秒后关闭
+        tusitemp =  setTimeout(function (){
+            $("#mess_tusi").remove();
+            $("#mess_tusi").html("");
+        }, 2000);
+        return false;
+    }
+
+    var url = "http://localhost:8100/upload";
+    var upload = function(formdata, method){
+        var prog = function(n){
+            $(".progress").show();
+            $(".active-pro").show();
+            $(".text").show();
+            $(".active-pro").css("width", n * 3 + "px");
+            $(".text").text(n + "%");
+        };
+
+        var xhr = new XMLHttpRequest();
+        xhr.upload.addEventListener("progress", uploadProgress, false);
+        xhr.addEventListener("load", uploadComplete, false);
+        xhr.addEventListener("error", uploadFailed, false);
+        xhr.addEventListener("abort", uploadCanceled, false);
+        xhr.open("POST", url);
+        xhr.send(formdata);
+
+        function uploadProgress(evt) {
+            if (evt.lengthComputable) {
+                var percentComplete = Math.round(evt.loaded * 100 / evt.total);
+                //document.getElementById('res').innerHTML = percentComplete.toString() + '%';
+                console.log(percentComplete);
+                prog(percentComplete);
+            }
+            else {
+                //document.getElementById('res').innerHTML = 'unable to compute';
+            }
+        }
+
+        function uploadComplete(evt) {
+            /*服务器端返回响应时候触发event事件*/
+            var data = JSON.parse(evt.target.responseText);
+            console.log(data);
+
+            if (method === "image"){
+                mess_tusi("图片上传成功");
+            } else if (method === "video"){
+                mess_tusi("视频上传成功");
+            }
+
+            $(".progress").hide();
+            $(".active-pro").hide();
+            $(".text").hide();
+
+            //console.log(url.match(/\/upload\w+/g)[0].substring(7));
+/*            if(data.errorCode == 100101 || data.errorCode== 100001){
+                //loaded = true;
+                mess_tusi("用户已在别处失败，请重新登录");
+                setTimeout(function(){
+                    localStorage.removeItem("phoneNum");
+                    localStorage.removeItem("password");
+                    window.location.href="login.html";
+                }, 1000);
+            } else
+            if (url.match(/\/upload\w+/g)[0].substring(7) === "Pictures"){ //区分uploadVideos
+                //if (url.substring(0, 5) === "https"){ //区分upload和Pictures
+                imgAddress = data.photos[0];
+                var width = getInfo(src).match(/\d+/g)[0];
+                var height = getInfo(src).match(/\d+/g)[1];
+                imgInfo.photo.push({"url": imgAddress, "width": width, "height": height, "id": id});
+                //console.log(imgInfo);
+                //console.log(imgData);
+                console.log("success: " + imgAddress);
+                $(".mask").hide();
+                $(".approve").stop().animate({
+                    "bottom":"-2rem"
+                },200);
+                mess_tusi("图片上传成功");
+                $(".progress").hide();
+                $(".active-pro").hide();
+                $(".text").hide();
+                //loaded = true;
+            } else {
+                videoLink = data.videos[0];
+                console.log(videoLink);
+                $(".mask").hide();
+                $(".approve-1").stop().animate({
+                    "bottom":"-2rem"
+                },200);
+                mess_tusi("视频上传成功");
+                $(".progress").hide();
+                $(".active-pro").hide();
+                $(".text").hide();
+
+                var width = $(window).width();
+                var height = $(window).height();
+
+                $(".show-video").hide();
+                $(".upload-video").append("<video id='vd' src=" + videoLink + " webkit-playsinline='true' x-webkit-airplay='allow' x5-video-player-type='h5' x5-video-player-fullscreen='true' width='50%' playsinline webkit-playsinline></video><div id='close_video'></div>");
+                $("#vd").css({
+                    "position": "relative",
+                    "width": "0.77rem",
+                    "height": "0.77rem",
+                    "margin-left": "0.3rem",
+                    "border": "dashed 1px #e6e6e6",
+                    "border-radius": "0.1rem",
+                    "float": "left"
+                });
+            }*/
+        }
+        function uploadFailed(evt) {
+            console.log("There was an error attempting to upload the file.");
+        }
+        function uploadCanceled(evt) {
+            console.log("The upload has been canceled by the user or the browser dropped the connection.");
+        }
+
+        /*$.ajax({
+            url: "http://localhost:8100/upload",
+            type: "POST",
+            data: formdata,
+            dataType: "json",
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(data){
+                console.log(data);
+            },
+            error: function(xhr){
+                console.log(xhr);
+            }
+        });*/
+    };
+
+    var saveImg = function (filename, base64) {
+        localStorage.setItem(filename, base64);
+    };
+
+    //base64->binary
+    function dataURItoBlob(base64Data) {
+        var byteString;
+        if (base64Data.split(',')[0].indexOf('base64') >= 0)
+            byteString = atob(base64Data.split(',')[1]);
+        else
+            byteString = unescape(base64Data.split(',')[1]);
+        var mimeString = base64Data.split(',')[0].split(':')[1].split(';')[0];
+        var ia = new Uint8Array(byteString.length);
+        for (var i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+        return new Blob([ia], {type:mimeString});
+    }
+
+    //压缩图片
+    var compPic;
+    var compress = function(){
+        $(".image-upload").imageCompress({
+//        $('.show_upload').imageCompress({
+            'quality': 50,
+            'onloadStart': function(result){
+                //console.log('读取图片开始'+result);
+            },
+            'onloadEnd': function(result){
+                //console.log('读取图片结束'+result);
+            },
+            'oncompressStart': function(result){
+                //console.log('压缩图片开始'+result);
+            },
+            'oncompressEnd': function(result){
+//                console.log('压缩图片结束'+ result);
+                $('#preview').append(result);
+//                compPic = $('#preview').find('img').attr("src"); //要在callback中处理
+            },
+            'callback': function(){
+                var len = $('#preview').find('img').length;
+                console.log(len);
+                for (var i = 0; i < len; i++){
+                    var res = $('#preview').children()[0]; //会自动移除preview中的img，所以第一个永远是最新的图片
+                    $('#result').append(res);
+                    compPic = $('#result').find('img').attr("src");
+                    $('#result').find('img').remove();
+                    check(compPic, len);
+                }
+//                console.log('处理完毕');
+            }
+        });
+    };
+
+    compress();
+
+    var count = 0;
+    var check = function(compPic, len){
+//              for (var i = 0; i < fileList.length; i++) {
+//                  var dt = new Date().getTime();
+//                  var filename = "Img" + dt;
+//                  var name = fileList[i].name; //图片文件名
+//                  console.log(name);
+//                  file = document.getElementById("files").files[i];
+//                  var formData = new FormData($("#formdata")[i]);
+//                  var reader = new FileReader();
+//                  reader.readAsDataURL(fileList[i]);
+//                  reader.onload = function (e) {
+//                  var blob = dataURItoBlob(this.result);
+                var blob = dataURItoBlob(compPic);
+                count += 1;
+                send(blob, len, count); //blob数据，name文件名，len多张总长，count当前长度
+//              $(".show_upload").append("<img src=" + this.result + " width='150' id='pic' />");
+//              var cid = "pic" + count;
+                $(".show_upload").append("<img src=" + compPic + " width='150' />");
+//              var pic = document.getElementById('pic');
+//              saveImg(filename, this.result);
+    }
+
+    $(".image-upload").change(function () {
+        var fileList = document.getElementById("files").files;
+        var len = fileList.length; //确定有几张图片
+    });
+
+    var fd = new FormData();
+    var send = function(data, len, cnt){
+        fd.append('files', data);
+//        console.log(fd.getAll('files'));
+        if (cnt == len){
+            upload(fd, "image");
+            count = 0; //置0，以便重复上传
+            fd = new FormData(); //上传成功后将当前fd对象销毁
+            $("#files").val('');
+        }
+    };
+
+    var size = function(blob){
+        var fileSize = 0;
+        if (blob.size > 1024 * 1024) {
+            fileSize = (Math.round(blob.size * 100 / (1024 * 1024)) / 100).toString() + 'MB';
+            return fileSize;
+        }
+        else {
+            fileSize = (Math.round(blob.size * 100 / 1024) / 100).toString() + 'KB';
+            return fileSize;
+        }
+    };
+
+    $(".video-upload").change(function(){
+        //var fd = new FormData(document.forms[2]);
+        //upload(videoUrl, fd);
+        //upload(url, fd);
+        var vd = document.getElementById("videos").files[0];
+        $("#videos").val('');
+        var reader = new FileReader();
+        reader.readAsDataURL(vd);
+        reader.onload=function(e) {
+            var blob = dataURItoBlob(this.result);
+            var fsize = size(blob); //获取对象大小
+            if (fsize.substring(fsize.length - 2) == 'MB' &&
+                    fsize.substring(0, fsize.length - 2) > 20){
+                mess_tusi("上传视频大小超过20MB");
+                return;
+            }
+            var fd = new FormData();
+            fd.append("videos", blob);
+            upload(fd, "video");
+        };
+    });
+
+    var showPic = function(arr){
+        for (var i = 0; i < arr.length; i++){
+            $(".show-local-img").append("<img src=" + localStorage.getItem(arr[i]) + " width='150' />");
+        }
+    };
+
+    var arr = ['1_standard.jpg', 'background.jpg', 'p2233980973.jpg', 'p2233960011.jpg'];
+//    showPic(arr); //从缓存中读取
+</script>
+
+</body>
+</html>

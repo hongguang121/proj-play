@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="css/poem.css" />
+    <script src="js/jquery-3.1.1.js"></script>
+    <script src="js/jquery.imagecompress.js"></script>
+    <title>多图上传</title>
+</head>
+<body>
+
+<div class="show_upload">
+    <div id="preview" style="display: none;"></div>
+</div>
+
+<div class="image-upload">
+    <form id="formdata">
+        <input name="files" type="file" multiple="multiple" class="image" id="files"/>
+    </form>
+</div>
+
+<div class="show-local-img"></div>
+
+<script>
+    var upload = function(formdata){
+        $.ajax({
+            url: "http://localhost:8100/upload",
+            type: "POST",
+            data: formdata,
+            dataType: "json",
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(data){
+                console.log(data);
+            },
+            error: function(xhr){
+                console.log(xhr);
+            }
+        });
+    };
+
+    var saveImg = function (filename, base64) {
+        localStorage.setItem(filename, base64);
+    };
+
+    //base64->binary
+    function dataURItoBlob(base64Data) {
+        var byteString;
+        if (base64Data.split(',')[0].indexOf('base64') >= 0)
+            byteString = atob(base64Data.split(',')[1]);
+        else
+            byteString = unescape(base64Data.split(',')[1]);
+        var mimeString = base64Data.split(',')[0].split(':')[1].split(';')[0];
+        var ia = new Uint8Array(byteString.length);
+        for (var i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+        return new Blob([ia], {type:mimeString});
+    }
+
+    //压缩图片
+    var compPic;
+    var compress = function(){
+        $(".image-upload").imageCompress({
+//        $('.show_upload').imageCompress({
+            'quality': 50,
+            'onloadStart': function(result){
+                //console.log('读取图片开始'+result);
+            },
+            'onloadEnd': function(result){
+                //console.log('读取图片结束'+result);
+            },
+            'oncompressStart': function(result){
+                //console.log('压缩图片开始'+result);
+            },
+            'oncompressEnd': function(result){
+//                console.log('压缩图片结束'+ result);
+                $('#preview').append(result);
+//                compPic = $('#preview').find('img').attr("src");
+//                console.log(compPic);
+            },
+            'callback': function(){
+                var len = $('#preview').find('img').length;
+
+//                console.log($('#preview').find('img').next().attr("src"));
+
+                console.log($('#preview').children()[0]);
+
+                for (var i = 0; i < len; i++){
+                    compPic = $('#preview').children()[i];
+//                    compPic = $('#preview').find('img').attr("src");
+                    console.log(compPic);
+                    check(compPic, len);
+                }
+
+                console.log('处理完毕');
+            }
+        });
+    };
+
+    compress();
+
+    var count = 0;
+    var check = function(compPic, len){
+//                for (var i = 0; i < fileList.length; i++) {
+//                    var dt = new Date().getTime();
+//                    var filename = "Img" + dt;
+//                    var name = fileList[i].name; //图片文件名
+                //console.log(name);
+//                    file = document.getElementById("files").files[i];
+//            var formData = new FormData($("#formdata")[i]);
+//                    var reader = new FileReader();
+//                    reader.readAsDataURL(fileList[i]);
+//                    reader.onload = function (e) {
+//                        var blob = dataURItoBlob(this.result);
+                var blob = dataURItoBlob(compPic);
+                count += 1;
+                send(blob, len, count); //blob数据，name文件名，len多张总长，count当前长度
+//                        $(".show_upload").append("<img src=" + this.result + " width='150' id='pic' />");
+                var cid = "pic" + count;
+                $(".show_upload").append("<img src=" + compPic + " width='150' id=" + cid + " />");
+
+//                var pic = document.getElementById('pic');
+
+//                saveImg(filename, this.result);
+            }
+//                }
+//            }
+//    }
+
+    $(".image-upload").change(function () {
+        var fileList = document.getElementById("files").files;
+        var len = fileList.length; //确定有几张图片
+
+    });
+
+    var fd = new FormData();
+    var send = function(data, len, count){
+        fd.append('files', data);
+//        console.log(fd.getAll('files'));
+        if (count == len){
+            upload(fd);
+            fd = new FormData(); //上传成功后将当前fd对象销毁
+            $("#files").val('');
+        }
+    }
+
+    var showPic = function(arr){
+        for (var i = 0; i < arr.length; i++){
+            $(".show-local-img").append("<img src=" + localStorage.getItem(arr[i]) + " width='150' />");
+        }
+    };
+
+    var arr = ['1_standard.jpg', 'background.jpg', 'p2233980973.jpg', 'p2233960011.jpg'];
+//    showPic(arr); //从缓存中读取
+</script>
+
+</body>
+</html>

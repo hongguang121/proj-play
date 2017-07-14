@@ -1,0 +1,4 @@
+(load "j-bob-lang.scm")
+(load "j-bob.scm")
+(load "little-prover.scm")
+(dethm.align/align)

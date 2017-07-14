@@ -1,0 +1,208 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+html{
+    font-size: 26.66vw;
+}
+
+.part-0{
+    position: relative;
+    width: 100%;
+    height: 2.27rem;
+    background: url(../img/signin_bgimg2x.png) no-repeat center;
+    background-size: 100% 100%;
+}
+
+.back{
+    position: relative;
+    width: 0.29rem;
+    height: 0.29rem;
+    border-radius: 0.29rem;
+    top: 0.32rem;
+    margin-left: 0.15rem;
+    background: url(../img/back_i2x.png) no-repeat center;
+    background-size: 100% 100%;
+}
+
+.title{
+    position: relative;
+    width: auto;
+    height: 0.15rem;
+    top: 0.42rem;
+    text-align: center;
+    font-size: 0.15rem;
+    margin: 0 auto;
+    color: #1d75d9;
+    opacity: 0.6;
+}
+
+.pic{
+    position: relative;
+    width: 100%;
+    height: auto;
+    top: 0.52rem;
+    margin: 0 auto;
+}
+
+.pic-0{
+    position: relative;
+    width: 0.8rem;
+    height: 0.8rem;
+    border-radius: 0.8rem;
+    background: url(../img/cahsm_icon120.png) no-repeat center;
+    background-size: 100% 100%;
+    margin: 0 auto;
+}
+
+.pic-1{
+    position: relative;
+    width: 0.62rem;
+    height: 0.15rem;
+    top: 0.1rem;
+    background: url(../img/cabk_logoblue2x.png) no-repeat center;
+    background-size: 100% 100%;
+    margin: 0 auto;
+}
+
+.line-0, .line-1, .line-2{
+    position: relative;
+    width: 85%;
+    height: 0.5rem;
+    margin: 0 auto;
+    border-bottom: solid 1px #e2e5e6;
+}
+
+.phone-head{
+    position: relative;
+    width: 0.45rem;
+    height: auto;
+    padding-top: 0.18rem;
+    padding-left: 0.15rem;
+    padding-right: 0.1rem;
+    font-size: 0.14rem;
+    color: #81838e;
+    float: left;
+}
+
+.phone-num{
+    position: relative;
+    width: 2rem;
+    height: 0.25rem;
+    font-size: 0.14rem;
+    margin-top: 0.15rem;
+    padding-left: 0.2rem;
+    border-left: solid 1px #eeeeee;
+    color: #222222;
+    float: left;
+}
+
+.phone{
+    position: relative;
+    width: 2rem;
+    height: 0.25rem;
+    font-size: 0.14rem;
+    border: none;
+    outline:none;
+}
+
+.check{
+    position: relative;
+    width: 1rem;
+    height: auto;
+    padding-top: 0.18rem;
+    padding-left: 0.15rem;
+    padding-right: 0.1rem;
+    font-size: 0.14rem;
+    color: #81838e;
+    float: left;
+}
+
+.code{
+    position: relative;
+    width: 0.8rem;
+    height: 0.25rem;
+    margin-top: 0.15rem;
+    font-size: 0.14rem;
+    color: #222222;
+    border: none;
+    outline: none;
+    float: left;
+}
+
+.check-num{
+    position: relative;
+    width: 1rem;
+    height: 0.25rem;
+    margin-top: 0.18rem;
+    padding-left: 0.1rem;
+    font-size: 0.14rem;
+    text-align: center;
+    color: #42b88c;
+    border-left: solid 1px #eeeeee;
+    float: left;
+}
+
+.pass{
+    position: relative;
+    width: 1.8rem;
+    height: 0.25rem;
+    margin-top: 0.15rem;
+    padding-left: 0.15rem;
+    font-size: 0.14rem;
+    color: #c7c7cd;
+    border: none;
+    outline:none;
+    float: left;
+}
+
+.eye{
+    position: relative;
+    width: 0.22rem;
+    height: 0.22rem;
+    margin-top: 0.15rem;
+    right: 0.1rem;
+    float: right;
+    background: url(../img/icon_password_visible2x.png) no-repeat center;
+    background-size: 100% 100%;
+    display: block;
+}
+
+.eye img{
+    width: 100%;
+    height: 100%;
+}
+
+.sub{
+    position: relative;
+    width: 85%;
+    height: 0.44rem;
+    top: 0.2rem;
+    margin: 0 auto;
+    font-size: 0.17rem;
+    line-height: 0.44rem;
+    text-align: center;
+    color: #ffffff;
+    border-radius: 0.4rem;
+    background: #1D75D9;
+    display: block;
+}
+
+.agreement{
+    position: relative;
+    width: 100%;
+    height: 0.15rem;
+    margin: 0 auto;
+    top: 0.3rem;
+    text-align: center;
+    font-size: 0.12rem;
+    color: #81838e;
+    display: block;
+}
+
+.agreement a{
+    color: #42b88c;
+    text-decoration-color: #42b88c;
+    text-decoration: none;
+}

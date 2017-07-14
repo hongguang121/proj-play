@@ -1,0 +1,19 @@
+#lang racket
+
+(require json)
+(require data/queue)
+
+(define j (file->string "e:/test.json"))
+(define k (substring j 1))
+(define l (string->jsexpr k))
+
+(define q (make-queue))
+
+(enqueue! q 1)
+(dequeue! q)
+(enqueue-front! q 2)
+(enqueue-front! q 3)
+(queue-filter! q even?)
+(queue->list q)
+(queue-length q)
+

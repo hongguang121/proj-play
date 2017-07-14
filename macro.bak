@@ -1,0 +1,10 @@
+#lang racket
+
+(define-syntax foo
+  (λ (stx)
+    (syntax "I am foo")))
+
+(define-syntax-rule (swap x y)
+  (let ([tmp x])
+    (set! x y)
+    (set! y tmp)))

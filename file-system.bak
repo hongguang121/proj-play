@@ -1,0 +1,14 @@
+#lang racket
+
+(define (read-file file-path callback)
+  (thread
+   (λ ()
+     (with-handlers ([exn:fail?
+                      (λ (exn)
+                        (callback exn #f))])
+       (callback #f (file->string file-path))))))
+
+(read-file "e:/test.txt" (λ (err data)
+                             (if err
+                                 (displayln err)
+                                 (displayln data))))

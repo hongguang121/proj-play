@@ -1,0 +1,7 @@
+(define v6 `(v6 (nil 0)))
+(define v7 `(v7 (,v6 1)))
+(define v3 `(v3 (,v6 5)))
+(define v4 `(v4 (,v6 8) (,v7 4) (,v3 2)))
+(define v5 `(v5 (,v4 2) (,v7 6)))
+(define v2 `(v2 (,v4 3) (,v5 10)))
+(define v1 `(v1 (,v2 2) (,v4 1) (,v3 4)))
