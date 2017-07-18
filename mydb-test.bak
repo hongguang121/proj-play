@@ -1,0 +1,18 @@
+#lang racket
+
+(require db)
+
+(define USER "root")
+(define PASS "hikari57")
+(define mydb   
+  (mysql-connect #:user USER
+                 #:password PASS
+                 #:server "localhost"
+                 #:port 3306
+                 #:database "my_data"))
+
+(define (search id)
+  (query-rows mydb
+              "SELECT id, name, info FROM my_table"))
+
+

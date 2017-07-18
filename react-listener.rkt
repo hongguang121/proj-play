@@ -1,5 +1,9 @@
 #lang racket
 
+(require pmap)
+(require future-visualizer)
+(require racket/flonum)
+
 ;并行强调一次计算中包含多个并列执行的任务
 ;并发强调函数允许多次非阻塞调用(近似于同时发生)
 
@@ -79,4 +83,44 @@
 
 ;消息通知机制即首先维护一个已有消息列表，当新消息进入后对比已有列表确定是否是新消息，如果是则通知，这么做降低了轮询开销
 
+;loop-till
+(define-syntax (loop-till stx)
+  (syntax-case stx ()   
+    [(_ condition body)    
+     #'(let loop ()
+         (when condition
+           (body)
+           (loop)))]))
 
+(define i 5)
+(loop-till (> i 0) (λ () (displayln i) (set! i (sub1 i))))
+
+;filter upcase words
+(filter (λ (x) (char-upper-case? x)) (string->list "Hello World"))
+
+(define (mandelbrot iterations x y n)
+  (let ([ci (fl- (fl/ (* 2.0 (->fl y)) (->fl n)) 1.0)]
+        [cr (fl- (fl/ (* 2.0 (->fl x)) (->fl n)) 1.5)])
+    (let loop ([i 0] [zr 0.0] [zi 0.0])
+      (if (> i iterations)
+          i
+          (let ([zrq (fl* zr zr)]
+                [ziq (fl* zi zi)])
+            (cond
+              [(fl> (fl+ zrq ziq) 4.0) i]
+              [else (loop (add1 i)
+                          (fl+ (fl- zrq ziq) cr)
+                          (fl+ (fl* 2.0 (fl* zr zi)) ci))]))))))
+
+#|
+(define pls (pmapp-c-start 4))
+(define f '(lambda (iterations x y n) (mandelbrot iterations x y n)))
+(pmapp-c pls f '(10000000) '(62) '(500) '(1000))
+(pmapp-c-stop pls)
+|#
+
+;(define res (time (pmapf + (range 1 100000) (range 1 100000))))
+;(define res (time (pmapp '+ (range 1 100000) (range 1 100000))))
+;(define pls (pmapp-c-start 4))
+;(define res (time (pmapp-c pls '+ (range 1 100000) (range 1 100000))))
+;(pmapp-c-stop pls)
